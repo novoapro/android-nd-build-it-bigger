@@ -19,11 +19,11 @@ public class JokeTellerRepository {
             return;
 
         sJokeList = new ArrayList<>();
-        sJokeList.add("Q: What does a nosey pepper do? A: Gets jalapeno business!");
-        sJokeList.add("Q: What do you call a fake noodle? A: An Impasta");
-        sJokeList.add("Q: What do you call an alligator in a vest? A: An Investigator");
-        sJokeList.add("Q: What's the difference between a guitar and a fish? A: You can't tuna fish.");
-        sJokeList.add("Q: What do lawyers wear to court? A: Lawsuits!");
+        sJokeList.add("Q: What does a nosey pepper do?\nA: Gets jalapeno business!");
+        sJokeList.add("Q: What do you call a fake noodle?\nA: An Impasta");
+        sJokeList.add("Q: What do you call an alligator in a vest?\nA: An Investigator");
+        sJokeList.add("Q: What's the difference between a guitar and a fish?\nA: You can't tuna fish.");
+        sJokeList.add("Q: What do lawyers wear to court?\nA: Lawsuits!");
     }
 
 }

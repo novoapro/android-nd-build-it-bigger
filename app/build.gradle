@@ -18,10 +18,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility parentProject.sourceCompatibility
-        targetCompatibility parentProject.targetCompatibility
-    }
 }
 
 dependencies {
