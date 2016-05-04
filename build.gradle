@@ -22,4 +22,9 @@ allprojects {
 ext {
     sourceCompatibility = JavaVersion.VERSION_1_7
     targetCompatibility = JavaVersion.VERSION_1_7
+
+    compileSdkVersion = 23
+    buildToolsVersion = "23.0.3"
+    minSdkVersion = 15
+    targetSdkVersion = 23
 }
