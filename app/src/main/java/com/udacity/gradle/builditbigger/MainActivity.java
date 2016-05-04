@@ -1,41 +1,27 @@
 package com.udacity.gradle.builditbigger;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.json.gson.GsonFactory;
-import com.manpdev.joketeller.*;
-import com.manpdev.joketeller.backend.jokeApi.JokeApi;
-import com.manpdev.joketeller.backend.jokeApi.model.JokeModel;
-
-import java.io.IOException;
+import com.manpdev.joketeller.JokeViewerActivity;
 
 
-public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+public class MainActivity extends AppCompatActivity implements JokeRequesterListener {
 
     private Intent mJokeIntent;
-    private JokeApi mJokeApi;
+    private JokeRequesterAsync mRequester;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        JokeApi.Builder builder =
-                new JokeApi.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), null);
-
-        this.mJokeApi = builder.build();
+        mRequester = new JokeRequesterAsync();
     }
 
 
@@ -45,6 +31,19 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mRequester.setListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mRequester.setListener(null);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -70,33 +69,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void requestJoke(View view) {
-        new JokeRequesterAsync().execute("");
-    }
-
-    public class JokeRequesterAsync extends AsyncTask<String, String, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                JokeModel model = mJokeApi.getJoke().execute();
-                if (model != null)
-                    return model.getJoke();
-                else
-                    return null;
-            } catch (IOException e) {
-                Log.e(TAG, "doInBackground: ", e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (!TextUtils.isEmpty(result))
-                tellJoke(result);
-            else
-                Toast.makeText(MainActivity.this, "No jokes", Toast.LENGTH_LONG).show();
-        }
+        mRequester.execute("");
     }
 
 
+    @Override
+    public void onSuccess(String joke) {
+        tellJoke(joke);
+    }
+
+    @Override
+    public void onError() {
+        Toast.makeText(MainActivity.this, "Error retrieving joke", Toast.LENGTH_LONG).show();
+    }
 }
