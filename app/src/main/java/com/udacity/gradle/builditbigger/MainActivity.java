@@ -1,5 +1,6 @@
 package com.udacity.gradle.builditbigger;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,17 +12,16 @@ import android.widget.Toast;
 import com.manpdev.joketeller.JokeViewerActivity;
 
 
-
 public class MainActivity extends AppCompatActivity implements JokeRequesterListener {
 
     private Intent mJokeIntent;
     private JokeRequesterAsync mRequester;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRequester = new JokeRequesterAsync();
     }
 
 
@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements JokeRequesterList
     @Override
     protected void onStart() {
         super.onStart();
-        mRequester.setListener(this);
+        if (mProgressDialog != null)
+            this.mProgressDialog.dismiss();
     }
 
     @Override
@@ -69,17 +70,32 @@ public class MainActivity extends AppCompatActivity implements JokeRequesterList
     }
 
     public void requestJoke(View view) {
+        showProgressDialog();
+        mRequester = new JokeRequesterAsync();
+        mRequester.setListener(this);
         mRequester.execute("");
     }
 
 
     @Override
     public void onSuccess(String joke) {
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
+
         tellJoke(joke);
     }
 
     @Override
     public void onError() {
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
         Toast.makeText(MainActivity.this, "Error retrieving joke", Toast.LENGTH_LONG).show();
+    }
+
+    private void showProgressDialog() {
+        this.mProgressDialog = new ProgressDialog(this);
+        this.mProgressDialog.setIndeterminate(true);
+        this.mProgressDialog.setMessage("Getting joke...");
+        this.mProgressDialog.show();
     }
 }
